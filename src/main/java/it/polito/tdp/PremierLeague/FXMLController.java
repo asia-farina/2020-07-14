@@ -5,9 +5,12 @@
 package it.polito.tdp.PremierLeague;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.PremierLeague.model.Model;
+import it.polito.tdp.PremierLeague.model.Squadre;
+import it.polito.tdp.PremierLeague.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,7 +38,7 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<Team> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtN"
     private TextField txtN; // Value injected by FXMLLoader
@@ -48,11 +51,33 @@ public class FXMLController {
 
     @FXML
     void doClassifica(ActionEvent event) {
-
+    	txtResult.clear();
+         try {
+        	 List<Squadre> battute=model.getBattute(cmbSquadra.getValue());
+        	 List<Squadre> altre=model.getAltre(cmbSquadra.getValue());
+        	 String s="SQUADRE BATTUTE: \n";
+        	 for (Squadre ss:battute) {
+        		 s+=ss.toString()+"\n";
+        	 }
+        	 s+="SQUADRE DA CUI E' STATA BATTUTA: \n";
+        	 for (Squadre ss:altre) {
+        		 s+=ss.toString()+"\n";
+        	 }
+        	 txtResult.setText(s);
+         } catch (NullPointerException e) {
+        	 txtResult.setText("Inserisci una squadra");
+        	 return;
+         }
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
+    	txtResult.clear();
+    	model.creaGrafo();
+    	txtResult.appendText("Grafo creato\n");
+    	txtResult.appendText("# VERTICI: " + this.model.getNumeroVertici()+ "\n");
+    	txtResult.appendText("# ARCHI: " + this.model.getNumeroArchi());
+    	cmbSquadra.getItems().addAll(model.getTeams());
 
     }
 
